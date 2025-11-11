@@ -1,4 +1,6 @@
 import FiltersView from '../view/filters-view';
+import SortListView from '../view/sort-list-view';
+
 import { render } from '../render';
 
 export default class Presenter {
@@ -11,5 +13,6 @@ export default class Presenter {
 
   init () {
     render(new FiltersView(), this.headerContainer);
+    render(new SortListView(), this.mainContainer);
   }
 }
