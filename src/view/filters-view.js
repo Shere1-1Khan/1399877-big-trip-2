@@ -28,7 +28,7 @@ function createFiltersListTemplate () {
   );
 }
 
-export default class FiltersVeiw {
+export default class FiltersView {
 
   getTemplate () {
     return createFiltersListTemplate();
