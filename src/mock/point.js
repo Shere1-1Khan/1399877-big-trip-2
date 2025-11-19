@@ -11,7 +11,7 @@ export function createPoint(type ,destinationId, offersIds) {
     dateTo: getDate(true),
     basePrice: getRandomInteger(PRICE.MIN, PRICE.MAX),
     isFavorite: !!getRandomInteger(0,1),
-    destinationId: destinationId,
-    offersIds: offersIds
+    destination: destinationId,
+    offers: offersIds
   };
 }

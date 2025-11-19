@@ -7,10 +7,16 @@ import EventItemEdit from '../view/event/event-item-edit';
 import { render } from '../render';
 
 export default class AppPresenter {
-  constructor({ headerContainer, mainContainer }) {
+  constructor({ headerContainer, mainContainer, pointModel, destinationModel, offerModel }) {
     this.headerContainer = headerContainer;
     this.mainContainer = mainContainer;
     this.eventListContainer = new EventsListView();
+
+    this.point = pointModel;
+    this.offers = offerModel;
+    this.destinations = destinationModel;
+
+    this.points = this.point.get();
   }
 
   init() {
@@ -18,9 +24,12 @@ export default class AppPresenter {
     render(new SortListView(), this.mainContainer);
     render(this.eventListContainer, this.mainContainer);
     render(new EventItemEdit(), this.eventListContainer.getElement());
-
-    for (let i = 0; i < 3; i++) {
-      render(new EventItemView(), this.eventListContainer.getElement());
-    }
+    this.points.forEach((point) => {
+      render(new EventItemView({
+        point: point,
+        destination: this.destinations.getById(point.destination),
+        offers: this.offers.getByType(point.type)
+      }), this.eventListContainer.getElement());
+    });
   }
 }
