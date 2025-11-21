@@ -2,9 +2,9 @@ import {getRandomInteger} from '../utils.js';
 import dayjs from 'dayjs';
 import { DURATION } from './const';
 
-let date = dayjs().subtract(getRandomInteger(0, DURATION.DAY), 'day').toDate();
-
 export function getDate(dateValue) {
+  let date = dayjs().subtract(getRandomInteger(0, DURATION.DAY), 'day').toDate();
+
   const minsGap = getRandomInteger(0, DURATION.MIN);
   const hoursGap = getRandomInteger(1, DURATION.HOUR);
   const daysGap = getRandomInteger(0, DURATION.DAY);

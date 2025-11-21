@@ -1,12 +1,8 @@
 import { FORMAT_DATE } from '../../const';
 import { createElement } from '../../render';
-import { formatStringToShortDate, callcDate } from '../../utils';
+import { formatStringToShortDate, callcDate , isFavoriteClass} from '../../utils';
 
-function isFavoriteClass(isFavorite) {
-  return isFavorite ? 'event__favorite-btn--active' : '';
-}
-
-function createOffersList ({offers}) {
+function createOffersListTemplate ({offers}) {
   return offers.map((item) => (
     `
     <li class="event__offer">
@@ -18,9 +14,7 @@ function createOffersList ({offers}) {
   )).join('');
 }
 
-function createEventItemTemplate (data) {
-  const {point, destination, offers} = data;
-
+function createEventItemTemplate ({point, destination, offers}) {
   const dateFrom = (formatDate) => formatStringToShortDate(point.dateFrom,formatDate);
   const dateTo = (formatDate) => formatStringToShortDate(point.dateTo, formatDate);
 
@@ -45,7 +39,7 @@ function createEventItemTemplate (data) {
         </p>
         <h4 class="visually-hidden">Offers:</h4>
         <ul class="event__selected-offers">
-          ${createOffersList(offers)}
+          ${createOffersListTemplate(offers)}
         </ul>
         <button class="event__favorite-btn  ${isFavoriteClass(point.isFavorite)}" type="button">
           <span class="visually-hidden">Add to favorite</span>
@@ -62,12 +56,12 @@ function createEventItemTemplate (data) {
 }
 
 export default class EventItemView {
-  constructor (data) {
-    this.data = data;
+  constructor (point) {
+    this.point = point;
   }
 
   getTemplate () {
-    return createEventItemTemplate(this.data);
+    return createEventItemTemplate(this.point);
   }
 
   getElement () {

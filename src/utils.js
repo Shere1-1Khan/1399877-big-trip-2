@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
+import {CITIES} from './mock/const';
 
 dayjs.extend(duration);
 
@@ -43,4 +44,16 @@ export function callcDate(dateFrom,dateTo){
 
   return parts.join(' ');
 
+}
+
+export function createDataListCitys () {
+  return CITIES.map((city) => `<option value="${city}"></option>`).join('');
+}
+
+export function isSelectedOffers (offer, selectedOffers) {
+  return !!selectedOffers.find((item) => item === offer.id);
+}
+
+export function isFavoriteClass(isFavorite) {
+  return isFavorite ? 'event__favorite-btn--active' : '';
 }

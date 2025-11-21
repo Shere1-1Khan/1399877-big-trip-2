@@ -2,8 +2,7 @@ import { getRandomInteger} from '../utils';
 import { getDate, getRandomItems } from './utils';
 import { PRICE } from './const';
 
-
-export function createPoint(type ,destinationId, offersIds) {
+export function createPoint(type, destinationId, offersIds) {
   return {
     id: crypto.randomUUID(),
     type: type,

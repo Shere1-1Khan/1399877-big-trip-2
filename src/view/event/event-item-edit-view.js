@@ -1,17 +1,8 @@
 import { createElement } from '../../render';
-import { CITIES } from '../../mock/const';
-import { formatStringToShortDate } from '../../utils';
+import { formatStringToShortDate, createDataListCitys, isSelectedOffers } from '../../utils';
 import { FORMAT_DATE } from '../../const';
 
-function createDataListCitys () {
-  return CITIES.map((city) => `<option value="${city}"></option>`).join('');
-}
-
-function isSelectedOffers (offer, selectedOffers) {
-  return !!selectedOffers.find((item) => item === offer.id);
-}
-
-function createOffersList ({offers}, selectedOffers) {
+function createOffersListTemplate ({offers}, selectedOffers) {
   return offers.map((item) => (
     `
     <div class="event__offer-selector">
@@ -27,9 +18,7 @@ function createOffersList ({offers}, selectedOffers) {
   ).join('');
 }
 
-function createEditItemEventTemplate(data) {
-  const { point, offers, destination } = data;
-
+function createEditItemEventTemplate({ point, offers, destination }) {
   const dateFrom = (formatDate) => formatStringToShortDate(point.dateFrom,formatDate);
   const dateTo = (formatDate) => formatStringToShortDate(point.dateTo, formatDate);
 
@@ -132,7 +121,7 @@ function createEditItemEventTemplate(data) {
           <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
           <div class="event__available-offers">
-            ${createOffersList(offers,point.offers)}
+            ${createOffersListTemplate(offers, point.offers)}
           </div>
         </section>
 
@@ -145,13 +134,13 @@ function createEditItemEventTemplate(data) {
   </li>`;
 }
 
-export default class EventItemEdit {
-  constructor (data) {
-    this.data = data;
+export default class EventItemEditView {
+  constructor (point) {
+    this.point = point;
   }
 
   getTemplate() {
-    return createEditItemEventTemplate(this.data);
+    return createEditItemEventTemplate(this.point);
   }
 
   getElement() {

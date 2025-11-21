@@ -2,7 +2,7 @@ import FiltersView from '../view/filters-view';
 import SortListView from '../view/sort-list-view';
 import EventsListView from '../view/event/events-list-view';
 import EventItemView from '../view/event/event-item-view';
-import EventItemEdit from '../view/event/event-item-edit';
+import EventItemEditView from '../view/event/event-item-edit-view';
 
 import { render } from '../render';
 
@@ -12,11 +12,11 @@ export default class AppPresenter {
     this.mainContainer = mainContainer;
     this.eventListContainer = new EventsListView();
 
-    this.point = pointModel;
-    this.offers = offerModel;
-    this.destinations = destinationModel;
+    this.pointModel = pointModel;
+    this.offerModel = offerModel;
+    this.destinationModel = destinationModel;
 
-    this.points = this.point.get();
+    this.points = this.pointModel.get();
   }
 
   init() {
@@ -24,17 +24,17 @@ export default class AppPresenter {
     render(new SortListView(), this.mainContainer);
     render(this.eventListContainer, this.mainContainer);
 
-    render(new EventItemEdit({
+    render(new EventItemEditView({
       point: this.points[0],
-      destination: this.destinations.getById(this.points[0].destination),
-      offers: this.offers.getByType(this.points[0].type)
+      destination: this.destinationModel.getById(this.points[0].destination),
+      offers: this.offerModel.getByType(this.points[0].type)
     }), this.eventListContainer.getElement());
 
     this.points.forEach((point) => {
       render(new EventItemView({
         point: point,
-        destination: this.destinations.getById(point.destination),
-        offers: this.offers.getByType(point.type)
+        destination: this.destinationModel.getById(point.destination),
+        offers: this.offerModel.getByType(point.type)
       }), this.eventListContainer.getElement());
     });
   }
