@@ -1,6 +1,6 @@
-import { createElement } from '../../render';
 import { formatStringToShortDate, createDataListCitys, isSelectedOffers } from '../../utils';
 import { FORMAT_DATE } from '../../const';
+import AbstractView from '../../framework/view/abstract-view';
 
 function createOffersListTemplate ({offers}, selectedOffers) {
   return offers.map((item) => (
@@ -134,24 +134,13 @@ function createEditItemEventTemplate({ point, offers, destination }) {
   </li>`;
 }
 
-export default class EventItemEditView {
+export default class EventItemEditView extends AbstractView {
   constructor (point) {
+    super();
     this.point = point;
   }
 
-  getTemplate() {
+  get template() {
     return createEditItemEventTemplate(this.point);
-  }
-
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
-
-  removeElement() {
-    this.element = null;
   }
 }

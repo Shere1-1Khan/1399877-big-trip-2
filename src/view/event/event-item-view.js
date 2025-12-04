@@ -1,5 +1,5 @@
 import { FORMAT_DATE } from '../../const';
-import { createElement } from '../../render';
+import AbstractView from '../../framework/view/abstract-view';
 import { formatStringToShortDate, callcDate , isFavoriteClass} from '../../utils';
 
 function createOffersListTemplate ({offers}) {
@@ -55,24 +55,13 @@ function createEventItemTemplate ({point, destination, offers}) {
   );
 }
 
-export default class EventItemView {
+export default class EventItemView extends AbstractView{
   constructor (point) {
+    super();
     this.point = point;
   }
 
-  getTemplate () {
+  get template () {
     return createEventItemTemplate(this.point);
-  }
-
-  getElement () {
-    if(!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
-
-  removeElement () {
-    this.element = null;
   }
 }

@@ -1,10 +1,9 @@
+import { render } from '../framework/render';
 import FiltersView from '../view/filters-view';
 import SortListView from '../view/sort-list-view';
 import EventsListView from '../view/event/events-list-view';
 import EventItemView from '../view/event/event-item-view';
 import EventItemEditView from '../view/event/event-item-edit-view';
-
-import { render } from '../render';
 
 export default class AppPresenter {
   constructor({ headerContainer, mainContainer, pointModel, destinationModel, offerModel }) {
@@ -28,14 +27,14 @@ export default class AppPresenter {
       point: this.points[0],
       destination: this.destinationModel.getById(this.points[0].destination),
       offers: this.offerModel.getByType(this.points[0].type)
-    }), this.eventListContainer.getElement());
+    }), this.eventListContainer.element);
 
     this.points.forEach((point) => {
       render(new EventItemView({
         point: point,
         destination: this.destinationModel.getById(point.destination),
         offers: this.offerModel.getByType(point.type)
-      }), this.eventListContainer.getElement());
+      }), this.eventListContainer.element);
     });
   }
 }
