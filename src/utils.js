@@ -57,3 +57,7 @@ export function isSelectedOffers (offer, selectedOffers) {
 export function isFavoriteClass(isFavorite) {
   return isFavorite ? 'event__favorite-btn--active' : '';
 }
+
+export function isEditMode (point) {
+  return Boolean(point.id);
+}
