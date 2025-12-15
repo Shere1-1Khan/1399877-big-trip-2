@@ -1,8 +1,8 @@
 import { FORMAT_DATE } from '../../const';
-import { createElement } from '../../render';
+import AbstractView from '../../framework/view/abstract-view';
 import { formatStringToShortDate, callcDate , isFavoriteClass} from '../../utils';
 
-function createOffersListTemplate ({offers}) {
+function createOffersListTemplate (offers) {
   return offers.map((item) => (
     `
     <li class="event__offer">
@@ -14,7 +14,7 @@ function createOffersListTemplate ({offers}) {
   )).join('');
 }
 
-function createEventItemTemplate ({point, destination, offers}) {
+function createEventItemTemplate ({point, pointDestination, pointOffer}) {
   const dateFrom = (formatDate) => formatStringToShortDate(point.dateFrom,formatDate);
   const dateTo = (formatDate) => formatStringToShortDate(point.dateTo, formatDate);
 
@@ -25,7 +25,7 @@ function createEventItemTemplate ({point, destination, offers}) {
         <div class="event__type">
           <img class="event__type-icon" width="42" height="42" src="img/icons/${point.type}.png" alt="Event type icon">
         </div>
-        <h3 class="event__title">${point.type} ${destination.name}</h3>
+        <h3 class="event__title">${point.type} ${pointDestination?.name}</h3>
         <div class="event__schedule">
           <p class="event__time">
             <time class="event__start-time" datetime="${dateFrom(FORMAT_DATE.FULL_DATE_TIME)}">${dateFrom(FORMAT_DATE.TIME)}</time>
@@ -39,7 +39,7 @@ function createEventItemTemplate ({point, destination, offers}) {
         </p>
         <h4 class="visually-hidden">Offers:</h4>
         <ul class="event__selected-offers">
-          ${createOffersListTemplate(offers)}
+          ${createOffersListTemplate(pointOffer?.offers)}
         </ul>
         <button class="event__favorite-btn  ${isFavoriteClass(point.isFavorite)}" type="button">
           <span class="visually-hidden">Add to favorite</span>
@@ -55,24 +55,33 @@ function createEventItemTemplate ({point, destination, offers}) {
   );
 }
 
-export default class EventItemView {
-  constructor (point) {
-    this.point = point;
+export default class EventItemView extends AbstractView{
+  #point;
+  #pointDestination;
+  #pointOffer;
+  #handleEditClick;
+
+  constructor (params) {
+    super();
+    this.#point = params.point;
+    this.#pointDestination = params.pointDestination;
+    this.#pointOffer = params.pointOffer;
+    this.#handleEditClick = params.onEditClick;
+
+    this.#setInnerHandlers();
   }
 
-  getTemplate () {
-    return createEventItemTemplate(this.point);
+  #setInnerHandlers() {
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
+      this.#handleEditClick();
+    });
   }
 
-  getElement () {
-    if(!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
-
-    return this.element;
-  }
-
-  removeElement () {
-    this.element = null;
+  get template () {
+    return createEventItemTemplate({
+      point: this.#point,
+      pointDestination: this.#pointDestination,
+      pointOffer: this.#pointOffer
+    });
   }
 }

@@ -1,8 +1,8 @@
-import { createElement } from '../../render';
-import { formatStringToShortDate, createDataListCitys, isSelectedOffers } from '../../utils';
+import { formatStringToShortDate, createDataListCitys, isSelectedOffers, isEditMode } from '../../utils';
 import { FORMAT_DATE } from '../../const';
+import AbstractView from '../../framework/view/abstract-view';
 
-function createOffersListTemplate ({offers}, selectedOffers) {
+function createOffersListTemplate (offers, selectedOffers) {
   return offers.map((item) => (
     `
     <div class="event__offer-selector">
@@ -18,7 +18,16 @@ function createOffersListTemplate ({offers}, selectedOffers) {
   ).join('');
 }
 
-function createEditItemEventTemplate({ point, offers, destination }) {
+function createEventPicturesTemplate (pictures) {
+  return pictures.map((picture) => (
+    `
+      <img class="event__photo" src="${picture.src}" alt="${picture.description}">
+    `
+  )
+  ).join('');
+}
+
+function createEditItemEventTemplate({ point, pointOffer, pointDestination }) {
   const dateFrom = (formatDate) => formatStringToShortDate(point.dateFrom,formatDate);
   const dateTo = (formatDate) => formatStringToShortDate(point.dateTo, formatDate);
 
@@ -88,7 +97,7 @@ function createEditItemEventTemplate({ point, offers, destination }) {
             <label class="event__label  event__type-output" for="event-destination-1">
               ${point.type}
             </label>
-            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination.name}" list="destination-list-1">
+            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${pointDestination?.name}" list="destination-list-1">
               <datalist id="destination-list-1">
                 ${createDataListCitys()}
               </datalist>
@@ -111,47 +120,73 @@ function createEditItemEventTemplate({ point, offers, destination }) {
           </div>
 
           <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-          <button class="event__reset-btn" type="reset">Delete</button>
-          <button class="event__rollup-btn" type="button">
-            <span class="visually-hidden">Open event</span>
-          </button>
+          <button class="event__reset-btn" type="reset">${point.id ? 'Delete' : 'Cansel'}</button>
+          ${point.id ? '<button class="event__rollup-btn" type="button"><span class="visually-hidden">Open event</span></button>' : ''}
       </header>
       <section class="event__details">
         <section class="event__section  event__section--offers">
           <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
           <div class="event__available-offers">
-            ${createOffersListTemplate(offers, point.offers)}
+            ${pointOffer.offers ? createOffersListTemplate(pointOffer?.offers, point?.offers) : ''}
           </div>
         </section>
 
         <section class="event__section  event__section--destination">
           <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-          <p class="event__destination-description">${destination.description}.</p>
+          <p class="event__destination-description">${pointDestination?.description}.</p>
+
+          <div class="event__photos-container">
+              <div class="event__photos-tape">
+                ${isEditMode(point) ? createEventPicturesTemplate(pointDestination?.pictures) : ''}
+              </div>
+          </div>
         </section>
       </section>
     </form>
   </li>`;
 }
 
-export default class EventItemEditView {
-  constructor (point) {
-    this.point = point;
+export default class EventFormView extends AbstractView {
+  #point;
+  #pointDestination;
+  #pointOffer;
+
+  #handleFormSubmit;
+  #handleFormClose;
+
+  constructor (params) {
+    super();
+    this.#point = params.point;
+    this.#pointDestination = params.pointDestination;
+    this.#pointOffer = params.pointOffer;
+    this.#handleFormSubmit = params.onSubmit;
+    this.#handleFormClose = params.onClose;
+
+    this.#setInnerHandlers();
   }
 
-  getTemplate() {
-    return createEditItemEventTemplate(this.point);
-  }
-
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
+  #setInnerHandlers () {
+    const form = this.element.querySelector('form');
+    form.addEventListener('submit', (evt) => {
+      evt.preventDefault();
+      this.#handleFormSubmit(evt);
+    });
+    this.element.querySelector('.event__rollup-btn')?.addEventListener('click', () => {
+      this.#handleFormClose();
+    });
+    if(!this.#point.id) {
+      this.element.querySelector('.event__reset-btn')?.addEventListener('click', () => {
+        this.#handleFormClose();
+      });
     }
-
-    return this.element;
   }
 
-  removeElement() {
-    this.element = null;
+  get template() {
+    return createEditItemEventTemplate({
+      point: this.#point,
+      pointDestination: this.#pointDestination,
+      pointOffer: this.#pointOffer
+    });
   }
 }

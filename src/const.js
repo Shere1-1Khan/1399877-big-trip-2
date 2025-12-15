@@ -17,3 +17,13 @@ export const FORMAT_DATE = {
   DATE: 'MMM DD',
   TIME:'HH:mm'
 };
+
+export const BLANK_POINT = {
+  basePrice: null,
+  dateFrom: null,
+  dateTo: null,
+  destination: null,
+  isFavorite: false,
+  offers: [],
+  type: 'flight'
+};
