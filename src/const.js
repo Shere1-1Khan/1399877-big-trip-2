@@ -19,10 +19,10 @@ export const FORMAT_DATE = {
 };
 
 export const BLANK_POINT = {
-  basePrice: null,
+  basePrice: 0,
   dateFrom: null,
   dateTo: null,
-  destination: null,
+  destination: [],
   isFavorite: false,
   offers: [],
   type: 'flight'
